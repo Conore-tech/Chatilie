@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatsTilie</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="icon.svg">
+    <style>
+        * {
+            font-family: 'Tw Cen MT', sans-serif;
+            font-weight: bold;
+        }
+        .hiddenLog {
+            display: none !important;
+        }
+
+        .visibleLog {
+            display: flex !important;
+        }
+    </style>
+</head>
+<body >
+    <!-- Notification -->
+    <div id="notification" class="notification"></div>
+
+    <!-- Conteneur principal de chat -->
+    <div id="chatContainer" class="container" style="display: none;">
+        <!-- Menu des utilisateurs et thèmes -->
+        <div id="menu" class="menu">
+            <img class="profile-preview2" id="loginimg">
+            <label id="information" class="information"></label>
+            <input class="switch" type="checkbox" id="Titi">
+            <span class="add" id="addcontact">+</span>
+                
+                <div class="search-container">
+                    <input type="search" id="search-user" placeholder="Rechercher un contact..." class="search-user">
+                    <button id="search-button" class="search-btn">🔍</button>
+                </div>
+                
+                <hr>          
+            <h3>Contacts</h3>
+            <div id="contactList" class="contact-list"></div>
+        </div>
+        
+        <!-- Zone de discussion -->
+        <div id="chatArea" class="chat-area">
+            <div id="contactHeader" class="contact-header" style="display: none;">
+                <img id="contactPic" src="" alt="" class="contact-pic">
+                <span id="contactName" class="contact-name"></span>
+            </div>
+            <div id="messages" class="messages-box"></div>
+            <div id="typingIndicator" class="typing-indicator" style="display: none;"></div>
+            <hr>
+            <div class="messageBox">
+                <div id="emojiTooltip" class="emoji-tooltip hidden"></div>
+                <div id="emojiButton" class="emoji-btn">😀</div>
+                
+                <div class="fileUploadWrapper">
+                    <label for="fileInput">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 337 337">
+                            <circle stroke-width="20" stroke="#6c6c6c" fill="none" r="158.5" cy="168.5" cx="168.5"></circle>
+                            <path stroke-linecap="round" stroke-width="25" stroke="#6c6c6c" d="M167.759 79V259"></path>
+                            <path stroke-linecap="round" stroke-width="25" stroke="#6c6c6c" d="M79 167.138H259"></path>
+                        </svg>
+                        <span class="tooltip">Ajouter un fichier</span>
+                    </label>
+                    <input type="file" id="fileInput" class="file-input">
+                </div>
+                <input required="" placeholder="Message..." type="text" id="responseInput" class="input-field">
+                <button id="sendButton" title="Envoyer">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 664 663">
+                        <path fill="none" d="M646.293 331.888L17.7538 17.6187L155.245 331.888M646.293 331.888L17.753 646.157L155.245 331.888M646.293 331.888L318.735 330.228L155.245 331.888"></path>
+                        <path stroke-linejoin="round" stroke-linecap="round" stroke-width="33.67" stroke="#6c6c6c" d="M646.293 331.888L17.7538 17.6187L155.245 331.888M646.293 331.888L17.753 646.157L155.245 331.888M646.293 331.888L318.735 330.228L155.245 331.888"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="client-dist/socket.io.js"></script>
+    <!-- <script src="MessageHandler.js"></script> -->
+    <script src="CloseDisplay.js"></script>
+    <script>
+         let selectedTheme = localStorage.getItem('thème') || 'light-theme';
+
+        // Appliquer le thème sélectionné au chargement
+        document.body.className = selectedTheme; 
+
+        // 🎨 Changement de thème
+        const themeToggle = document.getElementById('Titi');
+        if (themeToggle) {
+            themeToggle.checked = selectedTheme === 'dark-theme';
+            document.body.className = selectedTheme; 
+            themeToggle.addEventListener('change', () => {
+                const newTheme = themeToggle.checked ? 'dark-theme' : 'light-theme';
+                document.body.className = newTheme;
+                localStorage.setItem('thème', newTheme);
+            });
+        }
+
+
+
+        // 😀 Gestion du bouton emoji
+const emojiButton = document.getElementById('emojiButton');
+const emojiTooltip = document.getElementById('emojiTooltip');
+
+emojiButton.addEventListener('mouseover', (event) => {
+    event.stopPropagation();
+    
+    // Récupérer la position du bouton emoji
+    const rect = emojiButton.getBoundingClientRect();
+    
+    // Positionner le tooltip au-dessus du bouton
+    emojiTooltip.style.right = `${rect.left - 0}px`;
+    emojiTooltip.style.top = `${rect.top - emojiTooltip.offsetHeight - 8}px`; // 10px d'espace
+    
+    emojiTooltip.classList.toggle('hidden');
+});
+
+// Fermer le tooltip si on clique en dehors
+document.addEventListener('click', (event) => {
+    if (!emojiButton.contains(event.target) && !emojiTooltip.contains(event.target)) {
+        emojiTooltip.classList.add('hidden');
+    }
+});
+
+// 🔥 Génération des emojis dynamiques
+const emojiList = ["😀", "😂", "😍", "👍", "🔥", "😎", "🙏", "😢", "🎉", "❤️","😊","😅","😫","😛","😭","😨","💪","👎","🤛","👋","🤔"];
+emojiTooltip.innerHTML = emojiList.map(emoji => `<button class="emoji-option">${emoji}</button>`).join('');
+
+document.querySelectorAll('.emoji-option').forEach(btn => {
+    btn.addEventListener('click', function () {
+        document.getElementById('responseInput').value += this.textContent;
+        // emojiTooltip.classList.add('hidden');
+    });
+});
+
+
+
+    </script>
+</body>
+</html>

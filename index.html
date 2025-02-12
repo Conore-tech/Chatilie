@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="icon.svg">
+    <link rel="stylesheet" href="loading.css">
+    <title>Chargement...</title>
+</head>
+<body>
+    <!--Ecran de chargement-->
+    <div class="img"><img src="icon.svg" alt="logo" width="250px" height="250px" title="LobelChat"></div>
+    <h1>ChatsTilie</h1>
+
+<div class="loader">
+    <div class="loading-text">
+      Chargement<span class="dot">.</span><span class="dot">.</span
+      ><span class="dot">.</span>
+    </div>
+    <div class="loading-bar-background">
+      <div class="loading-bar">
+        <div class="white-bars-container">
+          <div class="white-bar"></div>
+          <div class="white-bar"></div>
+          <div class="white-bar"></div>
+          <div class="white-bar"></div>
+          <div class="white-bar"></div>
+          <div class="white-bar"></div>
+          <div class="white-bar"></div>
+          <div class="white-bar"></div>
+          <div class="white-bar"></div>
+          <div class="white-bar"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const storedUser = localStorage.getItem("user");
+        const loadingMessage = document.getElementById("loadingMessage");
+
+        if (loadingMessage) {
+            loadingMessage.textContent = "Vérification du compte en cours...";
+        }
+
+        setTimeout(() => {
+            if (storedUser) {
+                // ✅ L'utilisateur a un compte → Redirection après 3 secondes
+                window.location.href = "index-next.html";
+            } else {
+                // ❌ Pas de compte → Redirection vers login.html après 3 secondes
+                window.location.href = "login.html";
+            }
+        }, 3000); // ⏳ 3 secondes d'attente
+    });
+
+  </script>
+  
+</body>
+</html>

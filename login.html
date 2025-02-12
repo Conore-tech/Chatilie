@@ -1,0 +1,52 @@
+    
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription</title>
+    <link rel="icon" href="icon.svg">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <style>
+        * {
+            font-family: 'Tw Cen MT', sans-serif;
+            font-weight: bold;
+        }
+    </style>
+<form action="index-next.html" method="post">
+    <div id="notification" class="notification"></div>
+    <!-- Écran de connexion -->
+    <div id="loginScreen" class="login-screen">
+        <h2>Bienvenue sur ChatsTilie</h2>
+
+         <!-- Ajout du champ pour la photo de profil -->
+        <input type="file" id="profilePicInput" accept="image/*" class="inputloginimg">
+        <label for="profilePicInput" class="file-input-label" >
+            <div class="img" id="dis">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"></path>
+            </svg>
+            </div>
+            <img id="profilePicPreview" class="profile-preview" style="display:none;" alt="Aperçu de la photo">
+        </label>
+        
+
+        <input type="text" id="usernameInput" placeholder="Entrez votre nom" required class="inputlogin">
+        <input type="password" id="password" placeholder="Entrez votre mot de passe" required class="inputlogin">    
+        
+        <input type="submit" id="startChatButton" class="send-button" value="S'inscrire">
+    </div> 
+</form>
+    <script src="login.js"></script>
+    <script>
+        let selectedTheme = localStorage.getItem('thème') || 'light-theme';
+
+        // Appliquer le thème sélectionné au chargement
+        document.body.className = selectedTheme; 
+
+    </script>
+</body>
+</html>
+
